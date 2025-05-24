@@ -9,6 +9,7 @@ import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import Toast from "../../components/ToastMessage/Toast";
+import EmptyCart from "../../components/EmptyCard/EmptyCard";
 
 const Home = () => {
 
@@ -25,8 +26,9 @@ const Home = () => {
     });
 
     const [allNotes, setAllNotes] = React.useState([]);
-
     const [userInfo, setUserInfo] = React.useState(null);
+
+    const [isSearch, setIsSearch] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -86,7 +88,7 @@ const Home = () => {
         try {
             const response = await axiosInstance.delete("/delete-note/" + noteId);
 
-            if (response.data && response.data.note) {
+            if (response.data && !response.data.error) {
                 showToastMessage("Note deleted successfully", "delete");
                 getAllNotes();
             }
@@ -101,6 +103,44 @@ const Home = () => {
         }
     }
 
+    // Search for a Note
+    const onSearchNote = async (query) => {
+        try {
+            const response = await axiosInstance.get("/search-notes", {
+                params: { query },
+            });
+
+            if (response.data && response.data.notes) {
+                setIsSearch(true);
+                setAllNotes(response.data.notes);
+            } 
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleClearSearch = () => {
+        setIsSearch(false);
+        getAllNotes();
+    };
+
+    // Update isPinned
+    const updateIsPinned = async (noteData) => {
+        const noteId = noteData._id; 
+        try {
+            const response = await axiosInstance.put("/update-note-pinned/" + noteId, {
+                isPinned: !noteData.isPinned,
+            });
+
+            if (response.data && response.data.note) {
+                showToastMessage("Note updated successfully", "add");
+                getAllNotes();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     useEffect(() => {
         getAllNotes();
         getUserInfo();
@@ -110,24 +150,30 @@ const Home = () => {
 
     return (
         <>
-            <Navbar userInfo={userInfo}/>
+            <Navbar userInfo={userInfo} onSearchNote={onSearchNote} handleClearSearch={handleClearSearch}/>
 
             <div className="container mx-auto">
-                <div className="grid grid-cols-3 gap-4 mt-8">
-                    {allNotes.map((item, index) => (
-                        <NoteCard 
-                            key={item._id}
-                            title={item.title} 
-                            date={item.createdOn}
-                            content={item.content}
-                            tags={item.tags}
-                            isPinned={item.isPinned}
-                            onEdit={() => handleEdit(item)}
-                            onDelete={()=>deleteNote(item)}
-                            onPinNote={()=>{}}
+                {allNotes.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+                    {allNotes.map((item) => (
+                        <NoteCard
+                        key={item._id}
+                        title={item.title}
+                        date={item.createdOn}
+                        content={item.content}
+                        tags={item.tags}
+                        isPinned={item.isPinned}
+                        onEdit={() => handleEdit(item)}
+                        onDelete={() => deleteNote(item)}
+                        onPinNote={() => updateIsPinned(item)}
                         />
                     ))}
-                </div>
+                    </div>
+                ) : (
+                    <EmptyCart 
+                        title={isSearch ? `Sorry` : `No Notes Yet`}
+                        message={isSearch ? `Oops! No notes found matching your search` : `Start capturing your thoughts and ideas — your mind deserves a space to explore.`}/>
+                )}
             </div>
             <button className="w-16 h-16 flex items-center justify-center rounded-2xl bg-primary hover:bg-blue-600 absolute right-10 bottom-10" onClick={() => {
                 setOpenAddEditModal({

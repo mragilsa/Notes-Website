@@ -50,7 +50,7 @@ const Login = () => {
     
     return (
         <>
-            <Navbar />
+            <Navbar minimal />
 
             <div className="flex items-center justify-center mt-28">
                 <div className="w-96 border rounded bg-white px-7 py-10">
@@ -75,7 +75,7 @@ const Login = () => {
                         <button type="submit" className="btn-primary">
                             Login
                         </button>
-                        <p className="tex-sm text-center mt-4">
+                        <p className="text-sm text-center mt-4">
                             Not registered yet?{" "}
                             <Link to="/SignUp" className="font-regular text-primary underline">
                                 Create an Account
