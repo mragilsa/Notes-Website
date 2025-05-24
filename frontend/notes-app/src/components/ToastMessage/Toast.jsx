@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { LuCheck } from "react-icons/lu";
 import { MdDeleteOutline } from "react-icons/md";
 
 const Toast = ({ isShown, message, type, onClose }) => {
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            onClose();
+        }, 3000);
+        return () => {
+            clearTimeout(timeoutId);
+        }
+    }, [onClose]);
+
     return (
         <div className={`absolute top-20 right-6 transition-all duration-400 ${
             isShown ? "opacity-100" : "opacity-0"
