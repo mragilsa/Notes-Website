@@ -39,38 +39,47 @@ Notes Web App is a full-featured note-taking application that allows users to cr
    ``` bash
    touch .env
 
-5. Open the .env file and add the following variable (replace with your actual secret key):
+5. Generate a secret token and save it to the .env file:
    ``` bash
-   ACCESS_TOKEN_SECRET=your_access_token_secret_here
+   echo "ACCESS_TOKEN_SECRET=$(openssl rand -base64 32)" > .env
 
 6. Start the backend application:
    ``` bash
    npm install
    
-8. Start the backend server:
+7. Start the backend server:
    ``` bash
    npm start
    
-9. Return to the project root folder and go to the frontend folder:
+8. Open a new terminal tab/window, then navigate to the frontend folder:
     ``` bash
     cd ../frontend/notes-app
     
-10. Install frontend dependencies:
+9. Install frontend dependencies:
     ``` bash
     npm install
     
-11. Start the frontend application:
+10. Start the frontend application:
     ``` bash
     npm run dev
     
-12. Once started, the app will run locally and be accessible via your browser
+11. Once started, the app will run locally and be accessible via your browser
    
 ---
 
 ## 📘 How to Use
-- Log in or sign up to access your notes.
-- Click the + button to create a new note.
-- Use the pencil icon to edit and trash icon to delete.
-- Pin important notes using the pin icon.
-- Search notes by title, content, or tags.
+- Log in or sign up to access your notes
+- Click the + button to create a new note
+- Use the pencil icon to edit and trash icon to delete
+- Pin important notes using the pin icon
+- Search notes by title, content, or tags
+
+---
+
+## ℹ️ Additional
+You can log in using the test account:
+- Email: testuser@gmail.com
+- Password: 123
+
+Use this test account if you want to skip signing up.
 
